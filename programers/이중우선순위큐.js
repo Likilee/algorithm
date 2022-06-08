@@ -40,8 +40,7 @@ class PQueue {
 	}
 
 	popFront() {
-		if (this.size() == 0)
-			return  ;
+		if (this.size() == 0) return;
 		const result = this.peekFront();
 		this.swap(TOP, this.size());
 		this.#heap.pop();
@@ -65,8 +64,13 @@ class PQueue {
 	}
 
 	popBack() {
-		if (this.size() > 0)
-		return this.#heap.pop();
+		if (this.size() > 0) {
+			const result = this.#heap.pop();
+			if (this.size() > 1) {
+				if (this.#cmp(this.size(), this.size() - 1))
+					this.swap(this.size(), this.size() - 1);
+			}
+		}
 	}
 
 	swap(aPos, bPos) {
@@ -85,28 +89,29 @@ class PQueue {
 
 function solution(operations) {
 	const queue = new PQueue();
-
+	const answer = [];
 	operations.map((v) => {
 		const op = v.split(' ');
-		switch(op[0]) {
+		switch (op[0]) {
 			case 'I':
 				queue.push(Number(op[1]));
 				break;
 			case 'D':
-				if(op[1] == '1')
-					queue.popFront();
-				else
-					queue.popBack();
+				if (Number(op[1]) == 1) queue.popFront();
+				else if (Number(op[1] == -1)) queue.popBack();
 				break;
 			default:
 				break;
 		}
 	});
-	if (queue.isEmpty())
-		return [0, 0];
+	queue.print();
+	if (queue.isEmpty()) answer.push(0, 0);
 	else {
-		return [queue.peekFront(), queue.peekBack()]
+		answer.push(queue.peekFront(), queue.peekBack());
 	}
+	return answer;
 }
 
-console.log(solution(["I 10", "I 9", "I 8", "I 7", "D -1", "D 1", "D -1", "D 1", "I 1", "I 11", "I 100000", "D -1","D -1","D -1","D -1","D -1","D -1"]));
+console.log(
+	solution(['I 10', 'I 5', 'I 15', 'I 3', 'I 7', 'I 13', 'I 17', 'D -1', 'D -1', 'D -1'])
+);
